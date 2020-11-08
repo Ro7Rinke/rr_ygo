@@ -1,3 +1,20 @@
+import Path from 'path'
+
+const paths_relative = {
+    log_dir: '../log',
+    bd_rr_ygo_3: './rr_ygo_3.db'
+}
+
+const normalizePaths = () => {
+    let paths = {}
+    for (index in paths_relative){
+        paths[index] = Path.resolve(paths_relative[index])
+    }
+    return paths
+}
+
+export const paths = normalizePaths()
+
 export const general_info = {
     unchecked_game_value: 200,
     ranked_win_value: 500,
@@ -44,4 +61,16 @@ export const starting_cards = {
     spell_2: ['34677013'],
     spell_3: ['34677013'],
     trap_1: ['34677013']
+}
+
+export const errors = {
+    'db-1': {
+        message: 'Error opening database'
+    },
+    'db-2': {
+        message: 'Error retrieving data from database'
+    },
+    'db-3': {
+        message: 'User not found'
+    }
 }

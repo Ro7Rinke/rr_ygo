@@ -4,6 +4,7 @@ const user = {
     id: 'unique id',
     email: 'your@email.here',
     password: 'hashpassword',
+    token: 'acces token',
     name: 'Your Name',
     nick: 'nickname',
     cash: 5000,
@@ -134,4 +135,11 @@ const new_player_info = {
     // x3 equipe Spell
     // x3 continuous Spell
     // x6 traps
+}
+
+const error = {
+    code: 'db-3', //where - id
+    message: 'error create user', //some message about the error
+    date: 'datetype here',
+    datails: 'erros message from object'
 }
