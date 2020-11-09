@@ -1,5 +1,5 @@
-const createUserInfo = require('./user').createUserInfo
-const readUserInfo = require('./user').readUserInfo
+const createUserInfo = require('./db').createUserInfo
+const readUserInfo = require('./db').readUserInfo
 
 const main = async () => {
     let user = {
