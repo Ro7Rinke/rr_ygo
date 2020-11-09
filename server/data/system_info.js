@@ -1,21 +1,24 @@
-import Path from 'path'
+const { Console } = require('console')
+const Path = require('path')
+const fs = require('fs')
 
 const paths_relative = {
-    log_dir: '../log',
-    bd_rr_ygo_3: './rr_ygo_3.db'
+    log_dir: `${__dirname}/log`,
+    db_rr_ygo_3: `${__dirname}/rr_ygo_3.db`
 }
 
 const normalizePaths = () => {
     let paths = {}
     for (index in paths_relative){
-        paths[index] = Path.resolve(paths_relative[index])
+        paths[index] = Path.resolve(paths_relative[index]).replace('\\', '/')
     }
+    console.log(paths)
     return paths
 }
 
-export const paths = normalizePaths()
+const paths = paths_relative
 
-export const general_info = {
+const general_info = {
     unchecked_game_value: 200,
     ranked_win_value: 500,
     ranked_win_rp: 75,
@@ -32,7 +35,7 @@ export const general_info = {
     sealed_draw_rp: 60
 }
 
-export const new_player_info = {
+const new_player_info = {
     starting_cash: 5000,
     starting_rp: 100,
     starting_sealed_rp: 100,
@@ -50,7 +53,7 @@ export const new_player_info = {
     }
 }
 
-export const starting_cards = {
+const starting_cards = {
     normal_1: ['34677013'],
     normal_2: ['34677013'],
     normal_3: ['34677013'],
@@ -63,7 +66,7 @@ export const starting_cards = {
     trap_1: ['34677013']
 }
 
-export const errors = {
+const errors = {
     'db-1': {
         message: 'Error opening database'
     },
@@ -72,5 +75,10 @@ export const errors = {
     },
     'db-3': {
         message: 'User not found'
+    },
+    'db-4': {
+        message: 'Error inserting user on db'
     }
 }
+
+module.exports = {paths, general_info, new_player_info, starting_cards, errors}

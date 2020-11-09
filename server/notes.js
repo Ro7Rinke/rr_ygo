@@ -2,7 +2,7 @@
 
 const user = {
     id: 'unique id',
-    email: 'your@email.here',
+    // email: 'your@email.here',
     password: 'hashpassword',
     token: 'acces token',
     name: 'Your Name',
