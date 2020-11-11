@@ -1,5 +1,9 @@
 const createUserInfo = require('./db').createUserInfo
 const readUserInfo = require('./db').readUserInfo
+const readUserSpecific = require('./db').readUserSpecific
+const updateUserSpecific = require('./db').updateUserSpecific
+const login = require('./user').login
+const readUserCards = require('./db').readUserCards
 
 const main = async () => {
     let user = {
@@ -22,15 +26,13 @@ const main = async () => {
     
     let stTime = Date.now()
     
-    user2 = await readUserInfo('user.id')
-    if(user2.is_error){
-        console.log('faiou')
+    let user2 
+    try{
+        user2 = await readUserCards(user.id)
         console.log(user2)
-    }else{
-        console.log(user2)
+    }catch(error){
+        console.log(error)
     }
-    
-    console.log(Date.now() - stTime)
 }
 
 main()

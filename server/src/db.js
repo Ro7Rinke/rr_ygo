@@ -14,7 +14,7 @@ const openDatabase = (path) => {
             let message = `${errors['db-1'].message} ${path}`
             let details = JSON.stringify(error)
             logToFile(new Error(code, message, details, date))
-            response = error
+            response = new Error(code, message, details, date)
             return
         }
     })
@@ -25,19 +25,54 @@ const openDatabase = (path) => {
     return response
 }
 
+const updateUserSpecific = (columns, values, id) => {
+    return new Promise((resolve, reject) => {
+        let db = openDatabase(paths.db_rr_ygo_3)
+
+        if(db)
+            if(db.is_error)
+                reject(db)
+
+        let sql = `UPDATE user SET `
+
+        for(let index in columns){
+            sql += `${columns[index]} = (?)`
+            if(index != columns.length-1)
+                sql += `, `
+        }
+
+        sql += ` WHERE id = (?)`
+
+        let params = [...values, id]
+
+        db.run(sql, params, (error) => {
+            if(error){
+                let date = Date.now()
+                let code = 'db-5'
+                let message = `${errors['db-5'].message} on db ${paths.db_rr_ygo_3}`
+                let details = JSON.stringify(error)
+                logToFile(new Error(code, message, details, date))
+                reject(new Error(code, message, details, date))
+            }
+            resolve()
+        })
+    })
+}
+
 const readUserSpecific = (columns, id) => {
     return new Promise((resolve, reject) => {
         let db = openDatabase(paths.db_rr_ygo_3)
 
-        if(db.is_error)
-            reject(db)
+        if(db)
+            if(db.is_error)
+                reject(db)
 
         let sql = `SELECT `
         let params = [id]
 
         for(let index in columns){
             sql += `${columns[index]}`
-            if(index != columns-1)
+            if(index != columns.length-1)
                 sql += `, `
         }
 
@@ -50,7 +85,7 @@ const readUserSpecific = (columns, id) => {
                 let message = `${errors['db-2'].message} of User ID "${id}" from ${paths.db_rr_ygo_3}`
                 let details = JSON.stringify(error)
                 logToFile(new Error(code, message, details, date))
-                reject(error)
+                reject(new Error(code, message, details, date))
             }
 
             if(row){
@@ -59,9 +94,9 @@ const readUserSpecific = (columns, id) => {
                 let date = Date.now()
                 let code = 'db-3'
                 let message = `${errors['db-3'].message} User ID "${id}" from ${paths.db_rr_ygo_3}`
-                let details = JSON.stringify(error)
+                let details = ''
                 logToFile(new Error(code, message, details, date))
-                reject(error)
+                reject(new Error(code, message, details, date))
             }
         })
     })
@@ -71,6 +106,10 @@ const readUserInfo = (id) => {
     return new Promise((resolve, reject) => {
 
         let db = openDatabase(paths.db_rr_ygo_3)
+
+        if(db)
+            if(db.is_error)
+                reject(db)
 
         let sql = `SELECT nick, name, cash, rp, sealed_rp, unchecked_games, ranked_wins, ranked_defeats, ranked_draws, sealed_unchecked_games, sealed_wins, sealed_defeats, sealed_draws FROM user WHERE id = (?)`
         let params = [id]
@@ -82,7 +121,7 @@ const readUserInfo = (id) => {
                 let message = `${errors['db-2'].message}, all infos of User ID "${id}" from ${paths.db_rr_ygo_3}`
                 let details = JSON.stringify(error)
                 logToFile(new Error(code, message, details, date))
-                reject(error)
+                reject(new Error(code, message, details, date))
             }
 
             if(row){
@@ -91,9 +130,9 @@ const readUserInfo = (id) => {
                 let date = Date.now()
                 let code = 'db-3'
                 let message = `${errors['db-3'].message} User ID "${id}" from ${paths.db_rr_ygo_3}`
-                let details = JSON.stringify(error)
+                let details = ''
                 logToFile(new Error(code, message, details, date))
-                reject(error)
+                reject(new Error(code, message, details, date))
             }
         })
     })
@@ -104,6 +143,10 @@ const createUserInfo = (user) => {
 
         console.log(paths)
         let db = openDatabase(paths.db_rr_ygo_3)
+
+        if(db)
+            if(db.is_error)
+                reject(db)
 
         let placeholder = '(?)'
         for(let i = 0; i < 13; i++)
@@ -134,10 +177,8 @@ const createUserInfo = (user) => {
                 let message = `${errors['db-4'].message} ${paths.db_rr_ygo_3}`
                 let details = JSON.stringify(error)
                 logToFile(new Error(code, message, details, date))
-                console.log(error)
-                reject(error)
+                reject(new Error(code, message, details, date))
             }
-            console.log('ok')
             resolve()
         })
 
@@ -145,4 +186,82 @@ const createUserInfo = (user) => {
     
 }
 
-module.exports = {readUserInfo, createUserInfo, readUserSpecific}
+const readUserId = (nick) => {
+    return new Promise((resolve, reject) => {
+        let db = openDatabase(paths.db_rr_ygo_3)
+
+        if(db)
+            if(db.is_error)
+                reject(db)
+        
+        let sql = `SELECT id FROM user WHERE nick = (?)`
+        let params = [nick]
+
+        db.get(sql, params, (error, row) => {
+            if(error){
+                let date = Date.now()
+                let code = 'db-2'
+                let message = `${errors['db-2'].message} ${paths.db_rr_ygo_3}`
+                let details = JSON.stringify(error)
+                logToFile(new Error(code, message, details, date))
+                reject(new Error(code, message, details, date))
+            }
+            if(row){
+                resolve(row.id)
+            }else{
+                let date = Date.now()
+                let code = 'db-3'
+                let message = `${errors['db-3'].message} with nick: ${nick} ${paths.db_rr_ygo_3}`
+                let details = ''
+                let error = new Error(code, message, details, date)
+                logToFile(error)
+                reject(error)
+            }
+        })
+    })
+}
+
+const readUserCards = (id) => {
+    return new Promise((resolve, reject) => {
+        let db = openDatabase(paths.db_rr_ygo_3)
+
+        if(db)
+            if(db.is_error)
+                reject(db)
+        
+        let sql = `SELECT user_card.card_id, user_card.amount FROM user_card INNER JOIN user ON user.id = (?)`
+        let params = [id]
+
+        db.all(sql, params, (error, rows) => {
+            if(error){
+                let date = Date.now()
+                let code = 'db-2'
+                let message = `${errors['db-2'].message} ${paths.db_rr_ygo_3}`
+                let details = JSON.stringify(error)
+                logToFile(new Error(code, message, details, date))
+                reject(new Error(code, message, details, date))
+            }
+
+            if(rows){
+                resolve(rows)
+            }else{
+                let date = Date.now()
+                let code = 'db-3'
+                let message = `${errors['db-3'].message} with id: ${id} ${paths.db_rr_ygo_3}`
+                let details = ''
+                let error = new Error(code, message, details, date)
+                logToFile(error)
+                reject(error)
+            }
+        })
+    })
+}
+
+module.exports = {
+    readUserInfo, 
+    createUserInfo, 
+    readUserSpecific, 
+    updateUserSpecific,
+    readUserId,
+    readUserCards
+}

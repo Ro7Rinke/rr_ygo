@@ -78,6 +78,12 @@ const errors = {
     },
     'db-4': {
         message: 'Error inserting user on db'
+    },
+    'db-5': {
+        message: 'Error updating user on db'
+    },
+    'us-1': {
+        message: 'Invalid password'
     }
 }
 
