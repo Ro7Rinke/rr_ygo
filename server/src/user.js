@@ -39,6 +39,8 @@ const login = async (nick, password) => {
             throw error
         }
 
+        
+
         return user
 
     } else {

@@ -2,21 +2,27 @@ const { Console } = require('console')
 const Path = require('path')
 const fs = require('fs')
 
-const paths_relative = {
+// const paths_relative = {
+//     log_dir: `${__dirname}/log`,
+//     db_rr_ygo_3: `${__dirname}/rr_ygo_3.db`
+// }
+
+// const normalizePaths = () => {
+//     let paths = {}
+//     for (index in paths_relative){
+//         paths[index] = Path.resolve(paths_relative[index]).replace('\\', '/')
+//     }
+//     console.log(paths)
+//     return paths
+// }
+
+const paths = {
     log_dir: `${__dirname}/log`,
-    db_rr_ygo_3: `${__dirname}/rr_ygo_3.db`
+    db_rr_ygo_3: `${__dirname}/rr_ygo_3.db`,
+    users_dir: `${__dirname}/user`,
+    import_cards_config: `${__dirname}/import/import_cards_config.json`,
+    import_cards_decks_dir: `${__dirname}/import/decks`
 }
-
-const normalizePaths = () => {
-    let paths = {}
-    for (index in paths_relative){
-        paths[index] = Path.resolve(paths_relative[index]).replace('\\', '/')
-    }
-    console.log(paths)
-    return paths
-}
-
-const paths = paths_relative
 
 const general_info = {
     unchecked_game_value: 200,
@@ -77,13 +83,22 @@ const errors = {
         message: 'User not found'
     },
     'db-4': {
-        message: 'Error inserting user on db'
+        message: 'Error inserting'
     },
     'db-5': {
-        message: 'Error updating user on db'
+        message: 'Error updating'
     },
     'us-1': {
         message: 'Invalid password'
+    },
+    'fs-1': {
+        message: 'Path does not exist'
+    },
+    'fs-2': {
+        message: 'Error reading data'
+    },
+    'sy-1': {
+        message: 'Error converting JSON'
     }
 }
 

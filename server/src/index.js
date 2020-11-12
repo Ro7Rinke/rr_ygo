@@ -4,6 +4,8 @@ const readUserSpecific = require('./db').readUserSpecific
 const updateUserSpecific = require('./db').updateUserSpecific
 const login = require('./user').login
 const readUserCards = require('./db').readUserCards
+const readDir = require('./db').readDir
+const importCardsFromDecks = require('./card').importCardsFromDecks
 
 const main = async () => {
     let user = {
@@ -27,12 +29,13 @@ const main = async () => {
     let stTime = Date.now()
     
     let user2 
-    try{
-        user2 = await readUserCards(user.id)
-        console.log(user2)
-    }catch(error){
-        console.log(error)
-    }
+    importCardsFromDecks()
+    // try{
+    //     user2 = await readUserCards(user.id)
+    //     console.log(user2)
+    // }catch(error){
+    //     console.log(error)
+    // }
 }
 
 main()
