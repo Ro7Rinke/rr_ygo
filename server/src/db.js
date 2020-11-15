@@ -4,7 +4,7 @@ const errors = require('../data/system_info').errors
 const paths = require('../data/system_info').paths
 const Error = require('./class/Error')
 const fs = require('fs')
-const { resolve } = require('path')
+const uuidv4 = require('uuid')
 
 const openDatabase = (path) => {
     let response = null
@@ -25,6 +25,22 @@ const openDatabase = (path) => {
         return db
 
     return response
+}
+
+const updateUserAdd = async (column, value, id) => {
+    let old_value
+
+    try {
+        old_value = await readUserSpecific([column], id)
+    } catch (error) {
+        throw error
+    }
+
+    try {
+        await updateUserSpecific([column], old_value + value, id)
+    } catch (error) {
+        throw error
+    }
 }
 
 const updateUserSpecific = (columns, values, id) => {
@@ -259,6 +275,32 @@ const readUserCards = (id) => {
     })
 }
 
+const createUserCard = (user_id, card_id, amount) => {
+    return new Promise((resolve, reject) => {
+        let db = openDatabase(paths.db_rr_ygo_3)
+        if (db)
+            if (db.is_error)
+                reject(db)
+
+        let id = uuidv4()
+        let sql = `INSERT INTO user_card(id, user_id, card_id, amount) VALUES (?, ?, ?, ?)`
+        let params = [id, user_id, card_id, amount]
+
+        db.run(sql, params, (error) => {
+            if (error) {
+                let date = Date.now()
+                let code = 'db-4'
+                let message = `${errors['db-4'].message} ${paths.db_rr_ygo_3}`
+                let details = JSON.stringify(error)
+                let error_id = 'createUserCard'
+                logToFile(new Error(code, message, details, date, error_id))
+                reject(new Error(code, message, details, date, error_id))
+            }
+            resolve()
+        })
+    })
+}
+
 const readFile = (path) => {
 
     if (!fs.existsSync(path)) {
@@ -272,7 +314,7 @@ const readFile = (path) => {
         return error
     }
 
-    let data = fs.readFileSync(path, {encoding: 'utf-8'})
+    let data = fs.readFileSync(path, { encoding: 'utf-8' })
 
     if (data) {
         return data
@@ -300,7 +342,7 @@ const readDir = (path) => {
         return error
     }
 
-    let data = fs.readdirSync(path, {encoding: 'utf-8'})
+    let data = fs.readdirSync(path, { encoding: 'utf-8' })
 
     if (data) {
         return data
@@ -310,6 +352,36 @@ const readDir = (path) => {
         let message = `${errors[code].message} path: ${path}`
         let details = ''
         let error = new Error(code, message, details, date)
+        logToFile(error)
+        return error
+    }
+}
+
+const readFileInfo = (path) => {
+
+    if (!fs.existsSync(path)) {
+        let date = Date.now()
+        let code = 'fs-1'
+        let message = `${errors[code].message} path: ${path}`
+        let details = ''
+        let error = new Error(code, message, details, date)
+        logToFile(error)
+        return error
+    }
+
+    let path_split = path.split(/[\\\/]/)
+
+    let info = fs.statSync(path)
+
+    if (info) {
+        return { ...info, name: path_split[path_split.length - 1] }
+    } else {
+        let date = Date.now()
+        let code = 'fs-2'
+        let message = `${errors[code].message} info path: ${path}`
+        let details = ''
+        let error_id = 'readFileInfo'
+        let error = new Error(code, message, details, date, error_id)
         logToFile(error)
         return error
     }
@@ -327,7 +399,7 @@ const writeFile = (path, data) => {
         return error
     }
 
-    fs.writeFileSync(path, data, {encoding: 'utf-8'})
+    fs.writeFileSync(path, data, { encoding: 'utf-8' })
 }
 
 const deleteFile = (path) => {
@@ -383,4 +455,7 @@ module.exports = {
     createCard,
     deleteFile,
     writeFile,
+    readFileInfo,
+    createUserCard,
+    updateUserAdd,
 }

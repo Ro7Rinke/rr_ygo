@@ -20,12 +20,12 @@ const paths = {
     log_dir: `${__dirname}/log`,
     db_rr_ygo_3: `${__dirname}/rr_ygo_3.db`,
     users_dir: `${__dirname}/user`,
-    import_cards_config: `${__dirname}/import/import_cards_config.json`,
-    import_cards_decks_dir: `${__dirname}/import/decks`
+    import_cards_config: `${__dirname}/cards/import_cards_config.json`,
+    import_cards_decks_dir: `${__dirname}/cards/importDecks`
 }
 
 const general_info = {
-    unchecked_game_value: 200,
+    ranked_unchecked_game_value: 200,
     ranked_win_value: 500,
     ranked_win_rp: 75,
     ranked_defeat_value: 250,
@@ -102,4 +102,36 @@ const errors = {
     }
 }
 
-module.exports = {paths, general_info, new_player_info, starting_cards, errors}
+const game_type_codes = {
+    'r': 'ranked',
+    's': 'sealed'
+}
+
+const game_type_names = {
+    ranked: game_type_codes.r,
+    sealed: game_type_codes.s
+}
+
+const game_stat_codes = {
+    'w': 'win',
+    'l': 'defeat',
+    'd': 'draw'
+}
+
+const game_stat_names = {
+    win: game_stat_codes.w,
+    defeat: game_stat_codes.l,
+    draw: game_stat_codes.d
+}
+
+module.exports = {
+    paths, 
+    general_info, 
+    new_player_info, 
+    starting_cards, 
+    errors,
+    game_type_codes,
+    game_stat_codes,
+    game_type_names,
+    game_stat_names,
+}
