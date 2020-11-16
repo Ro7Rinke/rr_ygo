@@ -1,6 +1,4 @@
-const { Console } = require('console')
-const Path = require('path')
-const fs = require('fs')
+
 
 // const paths_relative = {
 //     log_dir: `${__dirname}/log`,
@@ -125,10 +123,10 @@ const game_stat_names = {
 }
 
 module.exports = {
-    paths, 
-    general_info, 
-    new_player_info, 
-    starting_cards, 
+    paths,
+    general_info,
+    new_player_info,
+    starting_cards,
     errors,
     game_type_codes,
     game_stat_codes,

@@ -1,5 +1,5 @@
 const fs = require('fs')
-const paths = require('../data/system_info').paths
+const { paths } = require('../data/system_info')
 
 const between = (max, min) => {
     return Math.floor(
@@ -11,4 +11,4 @@ const logToFile = (error) => {
     fs.writeFileSync(`${paths.log_dir}/${Date.now()}.log`, JSON.stringify(error))
 }
 
-module.exports = {between, logToFile}
+module.exports = { between, logToFile }

@@ -78,7 +78,7 @@ const collection_card = {
     id: 'unique id',
     collection_id: 'collection unique id',
     card_id: 'card unique id',
-    rarity_id: 'rarity unique id', 
+    rarity_id: 'rarity unique id',
 }
 
 const collection_junk = {

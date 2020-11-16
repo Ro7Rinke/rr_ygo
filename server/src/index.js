@@ -24,10 +24,10 @@ const main = async () => {
         sealed_defeats: 1,
         sealed_draws: 0,
     }
-    
+
     let stTime = Date.now()
-    
-    
+
+
 }
 
 main()

@@ -1,7 +1,7 @@
 const sqlite3 = require('sqlite3').verbose()
-const logToFile = require('./common').logToFile
-const errors = require('../data/system_info').errors
-const paths = require('../data/system_info').paths
+const { logToFile } = require('./common')
+const { errors } = require('../data/system_info')
+const { paths } = require('../data/system_info')
 const Error = require('./class/Error')
 const fs = require('fs')
 const uuidv4 = require('uuid')
@@ -275,6 +275,31 @@ const readUserCards = (id) => {
     })
 }
 
+const updateUserCard = (card_id, new_amount, user_id) => {
+    return new Promise((resolve, reject) => {
+        let db = openDatabase(paths.db_rr_ygo_3)
+        if (db)
+            if (db.is_error)
+                reject(db)
+
+        let sql = `UPDATE user_card SET amount = (?) WHERE card_id = (?) AND user_id = (?)`
+        let params = [new_amount, card_id, user_id]
+
+        db.run(sql, params, (error) => {
+            if (error) {
+                let date = Date.now()
+                let code = 'db-5'
+                let message = `${errors[code].message}`
+                let details = JSON.stringify(error)
+                let error_id = 'updateUserCard'
+                logToFile(new Error(code, message, details, date, error_id))
+                reject(new Error(code, message, details, date, error_id))
+            }
+            resolve()
+        })
+    })
+}
+
 const createUserCard = (user_id, card_id, amount) => {
     return new Promise((resolve, reject) => {
         let db = openDatabase(paths.db_rr_ygo_3)
@@ -458,4 +483,5 @@ module.exports = {
     readFileInfo,
     createUserCard,
     updateUserAdd,
+    updateUserCard
 }
