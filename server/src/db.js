@@ -1,10 +1,10 @@
 const sqlite3 = require('sqlite3').verbose()
-const { logToFile } = require('./common')
-const { errors } = require('../data/system_info')
-const { paths } = require('../data/system_info')
+const  logToFile  = require('./common').logToFile
+const  errors  = require('../data/system_info').errors
+const  paths  = require('../data/system_info').paths
 const Error = require('./class/Error')
 const fs = require('fs')
-const uuidv4 = require('uuid')
+const uuidv4 = require('uuid').v4
 
 const openDatabase = (path) => {
     let response = null
@@ -468,6 +468,158 @@ const createCard = (card) => {
     })
 }
 
+const createRarity = (rarity) => {
+    return new Promise((resolve, reject) => {
+        let db = openDatabase(paths.db_rr_ygo_3)
+
+        if (db)
+            if (db.is_error)
+                reject(db)
+
+        let sql = `INSERT INTO rarity(id, name, level) VALUES (?,?,?)`
+        let params = [rarity.id, rarity.name, rarity.level]
+
+        db.run(sql, params, (error) => {
+            if (error) {
+                let date = Date.now()
+                let code = 'db-4'
+                let message = `${errors[code].message} rarity: ${JSON.stringify(rarity)}`
+                let details = JSON.stringify(error)
+                let error_id = 'createRarity'
+                logToFile(new Error(code, message, details, date, error_id))
+                reject(new Error(code, message, details, date, error_id))
+            }
+            resolve()
+        })
+    })
+}
+
+const createCollection = (collection) => {
+    return new Promise((resolve, reject) => {
+        let db = openDatabase(paths.db_rr_ygo_3)
+
+        if (db)
+            if (db.is_error)
+                reject(db)
+
+        let sql = `INSERT INTO collection(id, name, total_cards, price, cards_per_pack, pack_limit, description) VALUES (?,?,?,?,?,?,?)`
+        let params = [
+                collection.id, 
+                collection.name, 
+                collection.total_cards, 
+                collection.price, 
+                collection.cards_per_pack, 
+                collection.pack_limit, 
+                collection.description
+            ]
+
+        db.run(sql, params, (error) => {
+            if (error) {
+                let date = Date.now()
+                let code = 'db-4'
+                let message = `${errors[code].message} collection: ${JSON.stringify(collection)}`
+                let details = JSON.stringify(error)
+                let error_id = 'createCollection'
+                logToFile(new Error(code, message, details, date, error_id))
+                reject(new Error(code, message, details, date, error_id))
+            }
+            resolve()
+        })
+    })
+}
+
+const createCollectionCard = (collection_card, collection_id) => {
+    return new Promise((resolve, reject) => {
+        let db = openDatabase(paths.db_rr_ygo_3)
+
+        if (db)
+            if (db.is_error)
+                reject(db)
+
+        let id = uuidv4()
+        let sql = `INSERT INTO collection_card(id, collection_id, card_id, rarity_id, junk_value) VALUES (?,?,?,?,?)`
+        let params = [
+                id,
+                collection_id,
+                collection_card.card_id,
+                collection_card.rarity_id,
+                collection_card.junk_value
+            ]
+
+        db.run(sql, params, (error) => {
+            if (error) {
+                let date = Date.now()
+                let code = 'db-4'
+                let message = `${errors[code].message} collection_id: ${collection_id} collection_card: ${JSON.stringify(collection_card)}`
+                let details = JSON.stringify(error)
+                let error_id = 'createCollectionCard'
+                logToFile(new Error(code, message, details, date, error_id))
+                reject(new Error(code, message, details, date, error_id))
+            }
+            resolve()
+        })
+    })
+}
+
+const createCollectionSlot = (collection_id) => {
+    return new Promise((resolve, reject) => {
+        let db = openDatabase(paths.db_rr_ygo_3)
+
+        if (db)
+            if (db.is_error)
+                reject(db)
+
+        let id = uuidv4()
+        let sql = `INSERT INTO collection_slot(id, collection_id) VALUES (?,?)`
+        let params = [id, collection_id]
+
+        db.run(sql, params, (error) => {
+            if (error) {
+                let date = Date.now()
+                let code = 'db-4'
+                let message = `${errors[code].message} collection_id: ${collection_id}`
+                let details = JSON.stringify(error)
+                let error_id = 'createCollectionSlot'
+                logToFile(new Error(code, message, details, date, error_id))
+                reject(new Error(code, message, details, date, error_id))
+            }
+            resolve(id)
+        })
+    })
+}
+
+const createSlotRarityChance = (slot_rarity_chace) => {
+    return new Promise((resolve, reject) => {
+        let db = openDatabase(paths.db_rr_ygo_3)
+
+        if (db)
+            if (db.is_error)
+                reject(db)
+
+        let id = uuidv4()
+        let sql = `INSERT INTO slot_rarity_chance(id, slot_id, rarity_id, chance) VALUES (?,?,?,?)`
+        let params = [
+            id,
+            slot_rarity_chace.slot_id,
+            slot_rarity_chace.rarity_id,
+            slot_rarity_chace.chance
+        ]
+
+        db.run(sql, params, (error) => {
+            if (error) {
+                let date = Date.now()
+                let code = 'db-4'
+                let message = `${errors[code].message} slot_rarity_chance: ${slot_rarity_chace}`
+                let details = JSON.stringify(error)
+                let error_id = 'createSlotRarityChance'
+                logToFile(new Error(code, message, details, date, error_id))
+                reject(new Error(code, message, details, date, error_id))
+            }
+            resolve()
+        })
+    })
+}
+
 module.exports = {
     readUserInfo,
     createUserInfo,
@@ -483,5 +635,10 @@ module.exports = {
     readFileInfo,
     createUserCard,
     updateUserAdd,
-    updateUserCard
+    updateUserCard,
+    createRarity,
+    createCollection,
+    createCollectionCard,
+    createCollectionSlot,
+    createSlotRarityChance,
 }

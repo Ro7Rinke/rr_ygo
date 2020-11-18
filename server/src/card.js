@@ -1,16 +1,17 @@
-const { readFile } = require('./db')
-const { paths } = require('../data/system_info')
-const { logToFile } = require('./common')
-const { errors } = require('../data/system_info')
-const { createCard } = require('./db')
-const { readDir } = require('./db')
-const { deleteFile } = require('./db')
-const { writeFile } = require('./db')
+const  readFile  = require('./db').readFile
+const  paths  = require('../data/system_info').paths
+const  logToFile  = require('./common').logToFile
+const  errors  = require('../data/system_info').errors
+const  createCard  = require('./db').createCard
+const  readDir  = require('./db').readDir
+const  deleteFile  = require('./db').deleteFile
+const  writeFile  = require('./db').writeFile
 const Error = require('./class/Error')
-const { updateUserAdd } = require('./db')
-const { readUserCards } = require('./db')
-const { updateUserCard } = require('./db')
-const { createUserCard } = require('./db')
+const  updateUserAdd  = require('./db').updateUserAdd
+const  readUserCards  = require('./db').readUserCards
+const  updateUserCard  = require('./db').updateUserCard
+const  createUserCard  = require('./db').createUserCard
+const  toArray  = require('./common').toArray
 
 const importCards = async () => {
     let data = readFile(paths.import_cards_config)
@@ -48,63 +49,67 @@ const importCards = async () => {
 }
 
 const importCardsFromDecks = async () => {
-    let decks_names = readDir(paths.import_cards_decks_dir)
+
+    let config = toArray(readCardsFromDecks(paths.import_cards_decks_dir))
+
+    writeFile(paths.import_cards_config, JSON.stringify(config))
+
+    await importCards()
+}
+
+const readCardsFromDecks = (dir) => {
+    let decks_names = readDir(dir)
 
     if (decks_names)
         if (decks_names.is_error)
-            return null
+            return decks_names
 
     let cards = {}
     let regexp = new RegExp(/^[0-9]+$/gm)
 
     for (let deck_name of decks_names) {
-        let data = readFile(`${paths.import_cards_decks_dir}/${deck_name}`)
+        if(deck_name.match(new RegExp(/.ydk$/))){
+            let data = readFile(`${dir}/${deck_name}`)
 
-        if (data) {
-            if (data.is_error) {
-                let date = Date.now()
-                let code = 'fs-2'
-                let message = `${errors[code].message} deck`
-                let details = `${paths.import_cards_decks_dir}/${deck_name}`
-                let error = new Error(code, message, details, date)
-                logToFile(error)
-            } else {
-                let rows = data.split('\n')
-
-                if (Array.isArray(rows)) {
-
-                    for (let row of rows) {
-                        if (row[0] != '#' && row[0] != '!') {
-                            let match_id = row.match(regexp)
-                            if (match_id && match_id[0])
-                                cards[`${match_id[0]}`] = {
-                                    id: match_id[0],
-                                    ygo_id: match_id[0]
-                                }
-                        }
-                    }
-                    deleteFile(`${paths.import_cards_decks_dir}/${deck_name}`)
-
-                } else {
+            if (data) {
+                if (data.is_error) {
                     let date = Date.now()
-                    let code = 'sy-1'
-                    let message = `${errors[code].message} split`
-                    let details = data
+                    let code = 'fs-2'
+                    let message = `${errors[code].message} deck`
+                    let details = `${dir}/${deck_name}`
                     let error = new Error(code, message, details, date)
                     logToFile(error)
+                } else {
+                    let rows = data.split('\n')
+
+                    if (Array.isArray(rows)) {
+
+                        for (let row of rows) {
+                            if (row[0] != '#' && row[0] != '!') {
+                                let match_id = row.match(regexp)
+                                if (match_id && match_id[0])
+                                    cards[`${match_id[0]}`] = {
+                                        id: match_id[0],
+                                        ygo_id: match_id[0]
+                                    }
+                            }
+                        }
+                        deleteFile(`${dir}/${deck_name}`)
+
+                    } else {
+                        let date = Date.now()
+                        let code = 'sy-1'
+                        let message = `${errors[code].message} split`
+                        let details = data
+                        let error = new Error(code, message, details, date)
+                        logToFile(error)
+                    }
                 }
             }
         }
     }
 
-    let config = []
-    for (let index in cards) {
-        config.push(cards[index])
-    }
-
-    writeFile(paths.import_cards_config, JSON.stringify(config))
-
-    await importCards()
+    return cards
 }
 
 const addCardsWithJunk = async (cards, user_id) => {
@@ -133,7 +138,7 @@ const addCardsWithJunk = async (cards, user_id) => {
         junk: []
     }
 
-    for (card of cards) {
+    for (let card of cards) {
         if (user_cards[card.card_id]) {
             let junk_amount = 0
             if (user_cards[card.card_id].amount < 3) {
@@ -194,4 +199,5 @@ module.exports = {
     importCards,
     importCardsFromDecks,
     addCardsWithJunk,
+    readCardsFromDecks
 }

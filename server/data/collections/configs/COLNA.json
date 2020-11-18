@@ -1,0 +1,15 @@
+{
+    "name": "CollectionName",
+    "id": "COLNA",
+    "price": 500,
+    "pack_limit": -1,
+    "description": "First game collection",
+    "junk_values": {
+        "CM": 30
+    },
+    "slots": [
+        {
+            "CM": 100
+        }
+    ]
+}

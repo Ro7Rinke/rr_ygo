@@ -5,6 +5,8 @@ const system_info = require('../data/system_info')
 const user = require('./user')
 const deck = require('./deck')
 const card = require('./card')
+const rarity = require('./rarity')
+const collection = require('./collection')
 
 const main = async () => {
     let user1 = {
@@ -24,6 +26,8 @@ const main = async () => {
         sealed_defeats: 1,
         sealed_draws: 0,
     }
+    // collection.generateImportCollectionsConfig()
+    collection.importCollections()
 
     let stTime = Date.now()
 

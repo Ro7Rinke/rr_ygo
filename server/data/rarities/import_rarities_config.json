@@ -1,0 +1,27 @@
+[
+    {
+        "name": "Common",
+        "id": "CM",
+        "level": 1
+    },
+    {
+        "name": "Rare",
+        "id": "RR",
+        "level": 2
+    },
+    {
+        "name": "Super Rare",
+        "id": "SR",
+        "level": 3
+    },
+    {
+        "name": "Ultra Rare",
+        "id": "UR",
+        "level": 4
+    },
+    {
+        "name": "Secret Rare",
+        "id": "SC",
+        "level": 5
+    }
+]

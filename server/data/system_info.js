@@ -17,9 +17,13 @@
 const paths = {
     log_dir: `${__dirname}/log`,
     db_rr_ygo_3: `${__dirname}/rr_ygo_3.db`,
-    users_dir: `${__dirname}/user`,
+    users_dir: `${__dirname}/users`,
     import_cards_config: `${__dirname}/cards/import_cards_config.json`,
-    import_cards_decks_dir: `${__dirname}/cards/importDecks`
+    import_cards_decks_dir: `${__dirname}/cards/importDecks`,
+    import_rarities_config: `${__dirname}/rarities/import_rarities_config.json`,
+    import_collections_config: `${__dirname}/collections/import_collections_config.json`,
+    import_collections_configs_dir: `${__dirname}/collections/configs`,
+    import_collections_decks_dir: `${__dirname}/collections/importDecks`,
 }
 
 const general_info = {
@@ -97,6 +101,9 @@ const errors = {
     },
     'sy-1': {
         message: 'Error converting JSON'
+    },
+    'cl-1': {
+        message: 'The sum of all slot chances does not match 100%'
     }
 }
 

@@ -50,9 +50,8 @@ const card = {
 }
 
 const collection = {
-    id: 'unique id',
+    id: 'unique id 4 letters',// 4 letter that reference the collection set
     name: 'collection set name',
-    alias: '4 letters',// 4 letter that reference the collection set
     total_cards: 120,
     price: 500,
     cards_per_pack: 9,
@@ -63,8 +62,8 @@ const collection = {
 const collection_slot = {
     id: 'unique id',
     collection_id: 'collection unique id',
-    //possible_rarities: ['RR', 'SR', 'UR', 'SC'],
-    //rarities_chances: [55, 30, 10, 5], //same order as possible_rarities, the sum of all values must be 100
+    // possible_rarities: ['RR', 'SR', 'UR', 'SC'],
+    // rarities_chances: [55, 30, 10, 5], //same order as possible_rarities, the sum of all values must be 100
 }
 
 const slot_rarity_chance = {
@@ -79,14 +78,15 @@ const collection_card = {
     collection_id: 'collection unique id',
     card_id: 'card unique id',
     rarity_id: 'rarity unique id',
+    junk_value: 20
 }
 
-const collection_junk = {
-    id: 'unique id',
-    collection_id: 'collection unique id',
-    rarity_id: 'CM', //rarities thar has junk value
-    value: 20, //same order as rarities
-}
+// const collection_junk = {
+//     id: 'unique id',
+//     collection_id: 'collection unique id',
+//     rarity_id: 'CM', //rarities thar has junk value
+//     value: 20, //same order as rarities
+// }
 
 const rarity = {
     id: 'unique id', // CM, RR, SR, UR, SC, CL, PR, GH

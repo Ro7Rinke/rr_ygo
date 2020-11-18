@@ -50,7 +50,7 @@ const extractGameType = (name) => {
 
     let tags = {}
 
-    for (code of codes_array) {
+    for (let code of codes_array) {
         if (game_type_codes[code]) {
             tags.type = code
         } else if (game_stat_codes[code]) {

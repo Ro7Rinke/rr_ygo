@@ -31,7 +31,7 @@ const getUserDecksInfo = (id) => {
         if (decks_names.is_error)
             return decks_names
     let decks_infos = []
-    for (deck_name of decks_names) {
+    for (let deck_name of decks_names) {
         let info = readFileInfo(`${paths.users_dir}/${id}/decks/${deck_name}`)
         if (info) {
             if (!info.is_error) {
