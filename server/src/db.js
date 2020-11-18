@@ -528,6 +528,78 @@ const createCollection = (collection) => {
     })
 }
 
+const readCollection = (collection_id) => {
+    return new Promise((resolve, reject) => {
+        let db = openDatabase(paths.db_rr_ygo_3)
+
+        if (db)
+            if (db.is_error)
+                reject(db)
+
+        let sql = `SELECT * FROM collection WHERE collection_id = (?)`
+        let params = [collection_id]
+
+        db.get(sql, params, (error, row) => {
+            if (error) {
+                let date = Date.now()
+                let code = 'db-2'
+                let message = `${errors['db-2'].message} ${paths.db_rr_ygo_3}`
+                let details = JSON.stringify(error)
+                logToFile(new Error(code, message, details, date))
+                reject(new Error(code, message, details, date))
+            }
+
+            if (row) {
+                resolve(row)
+            } else {
+                let date = Date.now()
+                let code = 'db-6'
+                let message = `${errors[code].message} with id: ${collection_id}`
+                let details = ''
+                let error = new Error(code, message, details, date)
+                logToFile(error)
+                reject(error)
+            }
+        })
+    })
+}
+
+const readCollections = () => {
+    return new Promise((resolve, reject) => {
+        let db = openDatabase(paths.db_rr_ygo_3)
+
+        if (db)
+            if (db.is_error)
+                reject(db)
+
+        let sql = `SELECT * FROM collection`
+        let params = [collection_id]
+
+        db.get(sql, params, (error, rows) => {
+            if (error) {
+                let date = Date.now()
+                let code = 'db-2'
+                let message = `${errors['db-2'].message} ${paths.db_rr_ygo_3}`
+                let details = JSON.stringify(error)
+                logToFile(new Error(code, message, details, date))
+                reject(new Error(code, message, details, date))
+            }
+
+            if (rows) {
+                resolve(rows)
+            } else {
+                let date = Date.now()
+                let code = 'db-6'
+                let message = `${errors[code].message} with id: ${collection_id}`
+                let details = ''
+                let error = new Error(code, message, details, date)
+                logToFile(error)
+                reject(error)
+            }
+        })
+    })
+}
+
 const createCollectionCard = (collection_card, collection_id) => {
     return new Promise((resolve, reject) => {
         let db = openDatabase(paths.db_rr_ygo_3)
@@ -561,6 +633,42 @@ const createCollectionCard = (collection_card, collection_id) => {
     })
 }
 
+const readCollectionCards = (collection_id) => {
+    return new Promise((resolve, reject) => {
+        let db = openDatabase(paths.db_rr_ygo_3)
+
+        if (db)
+            if (db.is_error)
+                reject(db)
+
+        let sql = `SELECT * FROM collection_card WHERE collection_id = (?)`
+        let params = [collection_id]
+
+        db.all(sql, params, (error, rows) => {
+            if (error) {
+                let date = Date.now()
+                let code = 'db-2'
+                let message = `${errors['db-2'].message} ${paths.db_rr_ygo_3}`
+                let details = JSON.stringify(error)
+                logToFile(new Error(code, message, details, date))
+                reject(new Error(code, message, details, date))
+            }
+
+            if (rows) {
+                resolve(rows)
+            } else {
+                let date = Date.now()
+                let code = 'db-6'
+                let message = `${errors[code].message} with id: ${collection_id}`
+                let details = ''
+                let error = new Error(code, message, details, date)
+                logToFile(error)
+                reject(error)
+            }
+        })
+    })
+}
+
 const createCollectionSlot = (collection_id) => {
     return new Promise((resolve, reject) => {
         let db = openDatabase(paths.db_rr_ygo_3)
@@ -584,6 +692,42 @@ const createCollectionSlot = (collection_id) => {
                 reject(new Error(code, message, details, date, error_id))
             }
             resolve(id)
+        })
+    })
+}
+
+const readCollectionSlots = (collection_id) => {
+    return new Promise((resolve, reject) => {
+        let db = openDatabase(paths.db_rr_ygo_3)
+
+        if (db)
+            if (db.is_error)
+                reject(db)
+
+        let sql = `SELECT * FROM collection_slots WHERE collection_id = (?)`
+        let params = [collection_id]
+
+        db.all(sql, params, (error, rows) => {
+            if (error) {
+                let date = Date.now()
+                let code = 'db-2'
+                let message = `${errors['db-2'].message} ${paths.db_rr_ygo_3}`
+                let details = JSON.stringify(error)
+                logToFile(new Error(code, message, details, date))
+                reject(new Error(code, message, details, date))
+            }
+
+            if (rows) {
+                resolve(rows)
+            } else {
+                let date = Date.now()
+                let code = 'db-6'
+                let message = `${errors[code].message} with id: ${collection_id}`
+                let details = ''
+                let error = new Error(code, message, details, date)
+                logToFile(error)
+                reject(error)
+            }
         })
     })
 }
@@ -620,6 +764,42 @@ const createSlotRarityChance = (slot_rarity_chace) => {
     })
 }
 
+const readSlotRaritiesChances = (slot_id) => {
+    return new Promise((resolve, reject) => {
+        let db = openDatabase(paths.db_rr_ygo_3)
+
+        if (db)
+            if (db.is_error)
+                reject(db)
+
+        let sql = `SELECT * FROM slot_rarity_chance WHERE slot_id = (?)`
+        let params = [slot_id]
+
+        db.all(sql, params, (error, rows) => {
+            if (error) {
+                let date = Date.now()
+                let code = 'db-2'
+                let message = `${errors['db-2'].message} ${paths.db_rr_ygo_3}`
+                let details = JSON.stringify(error)
+                logToFile(new Error(code, message, details, date))
+                reject(new Error(code, message, details, date))
+            }
+
+            if (rows) {
+                resolve(rows)
+            } else {
+                let date = Date.now()
+                let code = 'db-7'
+                let message = `${errors[code].message} with id: ${slot_id}`
+                let details = ''
+                let error = new Error(code, message, details, date)
+                logToFile(error)
+                reject(error)
+            }
+        })
+    })
+}
+
 module.exports = {
     readUserInfo,
     createUserInfo,
@@ -641,4 +821,9 @@ module.exports = {
     createCollectionCard,
     createCollectionSlot,
     createSlotRarityChance,
+    readCollectionCards,
+    readCollectionSlots,
+    readSlotRaritiesChances,
+    readCollection,
+    readCollections,
 }

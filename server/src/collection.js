@@ -1,10 +1,16 @@
-const writeFile = require('./db').writeFile
-const readFile = require('./db').readFile
-const createCollection = require('./db').createCollection
-const createCollectionCard = require('./db').createCollectionCard
-const createCollectionSlot = require('./db').createCollectionSlot
-const createSlotRarityChance = require('./db').createSlotRarityChance
-const readDir = require('./db').readDir
+const {
+    readCollection,
+    readCollectionCards,
+    readCollectionSlots,
+    createCollection,
+    createCollectionCard,
+    createCollectionSlot,
+    createSlotRarityChance,
+    writeFile,
+    readFile,
+    readDir,
+    readSlotRaritiesChances,
+} = require('./db')
 const paths = require('../data/system_info').paths
 const readCardsFromDecks = require('./card').readCardsFromDecks
 
@@ -146,8 +152,47 @@ const generateImportCollectionsConfig = () => {
         return resp
 }
 
+const getCollectionInfo = async (collection_id) => {
+    let collection_info = {}
+    try {
+        collection_info = await readCollection(collection_id)
+    } catch (error) {
+        throw error
+    }
+
+    try {
+        collection_info.cards = await readCollectionCards(collection_info.id)
+    } catch (error) {
+        throw error
+    }
+
+    collection_info.slots = []
+    try {
+        let slots = await readCollectionSlots(collection_info.id)
+        for(let slot of slots){
+            let slot_info = {}
+            try {
+                let slot_rarities_chances = await readSlotRaritiesChances(slot.id)
+                for (let slot_rarity_chance of slot_rarities_chances){
+                    slot_info[slot_rarity_chance.rarity_id] = slot_rarity_chance.chance
+                }
+                collection_info.slots.push(slot_info)
+            } catch (error) {
+                throw error
+            }
+        }
+    } catch (error) {
+        throw
+    }
+
+    resolve(collection_info)
+}
+
+// const generateCard =
+
 module.exports = {
     importCollections,
     generateImportCollectionsConfig,
     checkSlotRarityChance,
+    getCollectionInfo,
 }

@@ -90,6 +90,12 @@ const errors = {
     'db-5': {
         message: 'Error updating'
     },
+    'db-6': {
+        message: 'Collection not found'
+    },
+    'db-7': {
+        message: 'Slot not found'
+    },
     'us-1': {
         message: 'Invalid password'
     },

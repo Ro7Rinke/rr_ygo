@@ -143,3 +143,17 @@ const error = {
     date: 'datetype here',
     datails: 'erros message from object'
 }
+
+/*
+things to do:
+    read all collection info: --ok
+        read all cards from collection --ok
+        read all slots from collection --ok
+            read all rarity chance of slot --ok
+
+    open a pack:
+        generate a rnd card per collection slot
+
+    shop:
+        buy a single pack
+*/
