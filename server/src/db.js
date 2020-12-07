@@ -100,10 +100,11 @@ const readUserSpecific = (columns, id) => {
             if (error) {
                 let date = Date.now()
                 let code = 'db-2'
-                let message = `${errors['db-2'].message} of User ID "${id}" from ${paths.db_rr_ygo_3}`
+                let message = `${errors[code].message} of User ID "${id}" from ${paths.db_rr_ygo_3}`
                 let details = JSON.stringify(error)
-                logToFile(new Error(code, message, details, date))
-                reject(new Error(code, message, details, date))
+                let error_id = 'readUserSpecific1'
+                logToFile(new Error(code, message, details, date, error_id))
+                reject(new Error(code, message, details, date, error_id))
             }
 
             if (row) {
@@ -111,10 +112,11 @@ const readUserSpecific = (columns, id) => {
             } else {
                 let date = Date.now()
                 let code = 'db-3'
-                let message = `${errors['db-3'].message} User ID "${id}" from ${paths.db_rr_ygo_3}`
+                let message = `${errors[code].message} User ID "${id}" from ${paths.db_rr_ygo_3}`
                 let details = ''
-                logToFile(new Error(code, message, details, date))
-                reject(new Error(code, message, details, date))
+                let error_id = 'readUserSpecific2'
+                logToFile(new Error(code, message, details, date, error_id))
+                reject(new Error(code, message, details, date, error_id))
             }
         })
     })
@@ -129,17 +131,18 @@ const readUserInfo = (id) => {
             if (db.is_error)
                 reject(db)
 
-        let sql = `SELECT nick, name, cash, rp, sealed_rp, unchecked_games, ranked_wins, ranked_defeats, ranked_draws, sealed_unchecked_games, sealed_wins, sealed_defeats, sealed_draws FROM user WHERE id = (?)`
+        let sql = `SELECT id, nick, name, cash, rp, sealed_rp, ranked_unchecked_games, ranked_wins, ranked_defeats, ranked_draws, sealed_unchecked_games, sealed_wins, sealed_defeats, sealed_draws FROM user WHERE id = (?)`
         let params = [id]
 
         db.get(sql, params, (error, row) => {
             if (error) {
                 let date = Date.now()
                 let code = 'db-2'
-                let message = `${errors['db-2'].message}, all infos of User ID "${id}" from ${paths.db_rr_ygo_3}`
+                let message = `${errors[code].message}, all infos of User ID "${id}" from ${paths.db_rr_ygo_3}`
                 let details = JSON.stringify(error)
-                logToFile(new Error(code, message, details, date))
-                reject(new Error(code, message, details, date))
+                let error_id = 'readUserInfo1'
+                logToFile(new Error(code, message, details, date, error_id))
+                reject(new Error(code, message, details, date, error_id))
             }
 
             if (row) {
@@ -147,10 +150,11 @@ const readUserInfo = (id) => {
             } else {
                 let date = Date.now()
                 let code = 'db-3'
-                let message = `${errors['db-3'].message} User ID "${id}" from ${paths.db_rr_ygo_3}`
+                let message = `${errors[code].message} User ID "${id}" from ${paths.db_rr_ygo_3}`
                 let details = ''
-                logToFile(new Error(code, message, details, date))
-                reject(new Error(code, message, details, date))
+                let error_id = 'readUserInfo2'
+                logToFile(new Error(code, message, details, date, error_id))
+                reject(new Error(code, message, details, date, error_id))
             }
         })
     })
@@ -575,7 +579,7 @@ const readCollections = () => {
         let sql = `SELECT * FROM collection`
         let params = [collection_id]
 
-        db.get(sql, params, (error, rows) => {
+        db.all(sql, params, (error, rows) => {
             if (error) {
                 let date = Date.now()
                 let code = 'db-2'

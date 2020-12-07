@@ -12,7 +12,11 @@ const {
     readSlotRaritiesChances,
 } = require('./db')
 const paths = require('../data/system_info').paths
-const readCardsFromDecks = require('./card').readCardsFromDecks
+const {
+    readCardsFromDecks,
+    sortCardsByRarity,
+} = require('./card')
+const {between} = require('./common')
 
 const importCollections = async () => {
     let data = readFile(paths.import_collections_config)
@@ -182,17 +186,106 @@ const getCollectionInfo = async (collection_id) => {
             }
         }
     } catch (error) {
-        throw
+        throw error
     }
 
     resolve(collection_info)
 }
 
-// const generateCard =
+const getChancesIntervals = (slot) => {
+    let intervals = []
+    let last_min = 0
+
+    for(rarity_id in slot){
+        intervals.push({
+            rarity_id,
+            max_chance: slot[rarity_id]
+        })
+    }
+
+    intervals.sort((slot_a, slot_b) => {
+        if(slot_a.max_chance > slot_b.max_chance)
+            return 1
+
+        return -1
+    })
+
+    for(index in intervals){
+        intervals[index].min_chance = last_min
+        intervals[index].max_chance += last_min
+        last_min = intervals[index].max_chance
+    }
+
+    return intervals
+}
+
+const generateCardFromSlot = (slot, cards_by_rarity) => {
+    let intervals = getChancesIntervals(slot)
+    let rnd_rarity = between(100, 0)
+    let rarity_id
+
+    for(let interval of intervals){
+        if(interval.min_chance <= rnd_rarity && rnd_rarity >= interval.max_chance){
+            rarity_id = interval.rarity_id
+            break
+        }
+    }
+
+    if(!cards_by_rarity[rarity_id]){
+        let date = Date.now()
+            let code = 'db-8'
+            let message = `${errors[code].message}`
+            let details = `slot: ${JSON.stringify(slot)} cards: ${JSON.stringify(cards_by_rarity)}`
+            let error_id = 'generateCardFromSlot'
+            let error = new Error(code, message, details, date, error_id)
+            logToFile(error)
+            return error
+    }
+
+    let rnd_card_index = between(cards_by_rarity[rarity_id].length, 0)
+
+    let card = cards_by_rarity[rarity_id][rnd_card_index]
+
+    return {...card, amount: 1}
+}
+
+const generateCardsFromPack = async (collection_id) => {
+    let collection_info
+    try {
+        collection_info = await getCollectionInfo(collection_id)
+    } catch (error) {
+        throw error
+    }
+
+    // new_card = {
+    //     card_id,
+    //     rarity_id,
+    //     junk_value,
+    //     amount
+    // }
+
+    let cards_by_rarity = sortCardsByRarity(collection_info.cards)
+    
+    let new_cards = []
+
+    for(let slot of collection_info.slots){
+        let new_card = generateCardFromSlot(slot, cards_by_rarity)
+
+        if(new_card && new_card.is_error)
+            throw new_card
+
+        new_cards.push(new_card)
+    }
+
+    return new_cards
+}
 
 module.exports = {
     importCollections,
     generateImportCollectionsConfig,
     checkSlotRarityChance,
     getCollectionInfo,
+    getChancesIntervals,
+    generateCardFromSlot,
+    generateCardsFromPack,
 }

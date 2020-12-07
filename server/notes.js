@@ -148,12 +148,67 @@ const error = {
 things to do:
     read all collection info: --ok
         read all cards from collection --ok
-        read all slots from collection --ok
+        read all slots from collection: --ok
             read all rarity chance of slot --ok
 
-    open a pack:
-        generate a rnd card per collection slot
+    open a pack: --ok
+        generate a rnd card per collection slot --ok
 
     shop:
-        buy a single pack
+        buy a single pack --ok
+        debit value from user --ok
+
+    collection: --ok
+        return all collections id, names, cardsperpack, price --ok
+
+    routes:
+        create express server
+
+        login:
+            return all player info
+        
+        singin
+    
+    user:
+        create new user
+
+    client:
+        login:
+            sync on login
+
+        menu:
+            show options
+            show money
+
+        shop:
+            show money
+            view packs
+            buy a pack
+            show cards from openned pack
+
+        open ygo:
+            place decks on ygofolder
+            place lflist on ygofolder
+            place cards.cdb on ygofolder
+
+        sync:
+            sync decks:
+                compare date modify
+                upload decks
+                download decks
+
+            sync replays:
+                upload replays
+
+            sync money
+
+            sync lflist
+
+        show player info
+
+        show ranking of all players
+
+        exit:
+            sync on exit
+
 */

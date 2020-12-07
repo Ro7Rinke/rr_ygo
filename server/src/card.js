@@ -118,7 +118,7 @@ const addCardsWithJunk = async (cards, user_id) => {
     //     card_id,
     //     amount,
     //     junk_value,
-    //     rarity
+    //     rarity_id
     // }
 
     let user_cards = {}
@@ -195,9 +195,23 @@ const addCardsWithJunk = async (cards, user_id) => {
     return result
 }
 
+const sortCardsByRarity = (cards) => {
+    let cards_by_rarity = {}
+
+    for(let card of cards){
+        if(!cards_by_rarity[card.rarity_id])
+            cards_by_rarity[card.rarity_id] = []
+
+            cards_by_rarity[card.rarity_id].push(card)
+    }
+
+    return cards_by_rarity
+}
+
 module.exports = {
     importCards,
     importCardsFromDecks,
     addCardsWithJunk,
-    readCardsFromDecks
+    readCardsFromDecks,
+    sortCardsByRarity,
 }

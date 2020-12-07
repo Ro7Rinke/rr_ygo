@@ -24,6 +24,7 @@ const paths = {
     import_collections_config: `${__dirname}/collections/import_collections_config.json`,
     import_collections_configs_dir: `${__dirname}/collections/configs`,
     import_collections_decks_dir: `${__dirname}/collections/importDecks`,
+    default_lflist: `${__dirname}/lflists/default.lflist.conf`
 }
 
 const general_info = {
@@ -96,6 +97,9 @@ const errors = {
     'db-7': {
         message: 'Slot not found'
     },
+    'db-8': {
+        message: 'Rarity not found'
+    },
     'us-1': {
         message: 'Invalid password'
     },
@@ -110,6 +114,12 @@ const errors = {
     },
     'cl-1': {
         message: 'The sum of all slot chances does not match 100%'
+    },
+    'sh-1': {
+        message: `You don't have enough money`
+    },
+    'rq-1': {
+        message: `Missing information`
     }
 }
 

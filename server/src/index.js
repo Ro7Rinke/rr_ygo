@@ -1,37 +1,52 @@
-const db = require('./db')
-const common = require('./common')
+const express = require('express')
+const port = 3000
+const ip = 'http"//localhost'
+const bodyParser = require('body-parser')
+const {
+    logToFile,
+} = require('./common')
 const Error = require('./class/Error')
-const system_info = require('../data/system_info')
-const user = require('./user')
-const deck = require('./deck')
-const card = require('./card')
-const rarity = require('./rarity')
-const collection = require('./collection')
+const {
+    errors,
+} = require('../data/system_info')
+const {
+    login,
+} = require('./user')
+
+const app = express()
+
+app.use(bodyParser.urlencoded({ extended: false }))
+app.use(bodyParser.json())
 
 const main = async () => {
-    let user1 = {
-        id: '0ut4',
-        password: 'hashpassword',
-        name: 'Your Name',
-        nick: 'nickname',
-        cash: 5000,
-        rp: 300,
-        sealed_rp: 500,
-        unchecked_games: 23,
-        ranked_wins: 5,
-        ranked_defeats: 7,
-        ranked_draws: 1,
-        sealed_unchecked_games: 7,
-        sealed_wins: 2,
-        sealed_defeats: 1,
-        sealed_draws: 0,
-    }
-    // collection.generateImportCollectionsConfig()
-    collection.importCollections()
 
-    let stTime = Date.now()
+    app.post('/login', (req, res) => {
+        if(!req.body || !req.body.nick || !req.body.password){
+            let date = Date.now()
+            let code = 'rq-1'
+            let message = `${errors[code].message}`
+            let details = `body: ${JSON.stringify(req.body)}`
+            let error_id = 'main/login'
+            let error = new Error(code, message, details, date, error_id)
+            logToFile(error)
+            res.status(400).send(error)
+            return
+        }
 
+        login(req.body.nick, req.body.password)
+            .then((resp) => {
+                res.status(200).send(resp)
+                return
+            })  
+            .catch((error) => {
+                res.status(500).send(error)
+                return
+            })      
+    })
 
+    app.listen(port, () => {
+        console.log(`listening at ${ip}:${port}`)
+    })
 }
 
 main()
