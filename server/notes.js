@@ -177,8 +177,21 @@ things to do:
             sync on login
 
         menu:
-            show options
             show money
+
+            show options:
+                shop options:
+                    list pakcs
+                    buy pack
+                    pack details
+                    view last pack cards
+
+                show info
+                open ygo
+                sync
+                exit
+                show ranking
+                open deck edit
 
         shop:
             show money
